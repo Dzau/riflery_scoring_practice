@@ -123,6 +123,14 @@ function pressKey(key) {
   if (state.entry === "" && key === "0") return; // no leading zero
   state.entry += key;
   renderEntry();
+
+  // Auto-submit the moment the entry is unambiguous — i.e. no further
+  // digit could keep it within the 0-100 answer range. Small answers
+  // (1-9 and 10) stay open since they could still grow, so the submit
+  // key is there to confirm those.
+  if (state.entry.length >= MAX_DIGITS || Number(state.entry) * 10 > FINISH) {
+    submit();
+  }
 }
 
 function submit() {

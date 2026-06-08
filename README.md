@@ -10,8 +10,9 @@ A running-addition drill:
 
 - You start with a random number from **1–20**.
 - Each turn a new random **1–20** "shot" appears to add to your running total.
-- Type the sum on the on-screen **number pad** and submit — no answer choices to
-  recognize, so you actually do the math in your head.
+- Type the sum on the on-screen **number pad** — no answer choices to recognize,
+  so you actually do the math in your head. It **submits automatically** as soon
+  as your entry can't be anything else; tap **✓** to confirm small answers.
   - **Correct** → flashes green and moves on quickly.
   - **Wrong** → flashes red, reveals the correct sum, then continues from the
     *correct* total.
