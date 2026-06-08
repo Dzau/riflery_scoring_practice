@@ -36,11 +36,11 @@
         <span class="mode-card__go">Start &rarr;</span>
       </button>
 
-      <button class="mode-card mode-card--soon" disabled>
+      <button class="mode-card" data-action="choose-target">
         <span class="mode-card__no">Mode 2</span>
-        <span class="mode-card__name">Coming soon</span>
-        <span class="mode-card__desc">A target-reading challenge built around the official 50-ft rifle targets.</span>
-        <span class="mode-card__go">Locked</span>
+        <span class="mode-card__name">Score a Target</span>
+        <span class="mode-card__desc">Tap your shots onto an official 50-ft target. Read each ring, add up your score.</span>
+        <span class="mode-card__go">Start &rarr;</span>
       </button>
     </nav>
 
@@ -120,6 +120,64 @@
       <div class="result-actions">
         <button class="btn btn--primary" data-action="start-mode1">Play again</button>
         <button class="btn btn--ghost" data-action="home">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CHOOSE TARGET ===================== -->
+  <section id="choose" class="screen">
+    <header class="game-top">
+      <button class="iconbtn" data-action="home" aria-label="Back to menu">&larr;</button>
+      <h2 class="screen-title">Pick a target</h2>
+    </header>
+
+    <nav class="modes choose-list">
+      <button class="mode-card" data-action="score-single">
+        <span class="mode-card__no">TQ-1/1</span>
+        <span class="mode-card__name">One-bull target</span>
+        <span class="mode-card__desc">Single bull, scoring rings 2&ndash;10. Outer rings count too.</span>
+        <span class="mode-card__go">Score it &rarr;</span>
+      </button>
+
+      <button class="mode-card" data-action="score-five">
+        <span class="mode-card__no">TQ-1/5</span>
+        <span class="mode-card__name">Five-bull target</span>
+        <span class="mode-card__desc">Five bulls, rings 5&ndash;10, two shots each. Outside = miss.</span>
+        <span class="mode-card__go">Score it &rarr;</span>
+      </button>
+    </nav>
+
+    <footer class="home-foot">Shots touching a ring score the higher value</footer>
+  </section>
+
+  <!-- ===================== SCORE TARGET ===================== -->
+  <section id="score" class="screen">
+    <header class="game-top">
+      <button class="iconbtn" data-action="choose-target" aria-label="Back to target choice">&larr;</button>
+      <h2 id="scoreTitle" class="screen-title">Score a target</h2>
+      <button class="iconbtn" data-action="clear-shots" aria-label="Clear all shots">&#9003;</button>
+    </header>
+
+    <p class="score-hint">Tap to drop a shot &middot; tap a shot to remove it</p>
+
+    <div id="targetWrap" class="target-wrap"></div>
+
+    <div class="adder">
+      <div class="adder__shots">
+        <span class="adder__label">Shots</span>
+        <div id="shotList" class="shot-list"><span class="shot-list__empty">No shots yet</span></div>
+      </div>
+
+      <div class="adder__tally">
+        <div class="tally__line">
+          <span class="tally__caption">Running total</span>
+          <span id="tallySub" class="tally__sub">+0</span>
+        </div>
+        <span id="tallyTotal" class="tally__total">0</span>
+        <div class="tally__actions">
+          <button class="btn btn--ghost" type="button" data-action="add-next">Add next &rarr;</button>
+          <button class="btn btn--ghost" type="button" data-action="add-reset">Reset adder</button>
+        </div>
       </div>
     </div>
   </section>
