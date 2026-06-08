@@ -4,14 +4,16 @@
    Riflery Scoring Practice — Mode 1: Tally to 100
    -----------------------------------------------------------
    Start with a random 1-20. Each turn a new random 1-20 shot
-   appears to add to the running total. Pick the correct sum
-   from four close options. The round ends when you reach
-   exactly 100, or when the next shot would push you over 100.
+   appears to add to the running total. Type the sum on the
+   number pad and submit — no choices to recognize, you do the
+   math. The round ends when you reach exactly 100, or when the
+   next shot would push you over 100.
    =========================================================== */
 
 const FINISH = 100;
 const MIN_SHOT = 1;
 const MAX_SHOT = 20;
+const MAX_DIGITS = 3;        // answers never exceed 100
 const CORRECT_DELAY = 380;   // ms pause after a right answer
 const WRONG_DELAY = 850;     // ms pause after a wrong answer
 
@@ -28,7 +30,7 @@ const ui = {
   progressNow: el("progressNow"),
   runningTotal: el("runningTotal"),
   addValue: el("addValue"),
-  options: el("options"),
+  entryValue: el("entryValue"),
   feedback: el("feedback"),
   resultTitle: el("resultTitle"),
   resultSub: el("resultSub"),
@@ -44,28 +46,6 @@ let locked = false;
 /* ---------- helpers ---------- */
 const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-/* Build four answer choices clustered within +/-3 of the correct sum. */
-function makeOptions(correct) {
-  const opts = new Set([correct]);
-  const deltas = shuffle([-3, -2, -1, 1, 2, 3]);
-  for (const d of deltas) {
-    if (opts.size >= 4) break;
-    const v = correct + d;
-    if (v >= 1) opts.add(v);
-  }
-  let pad = 4;
-  while (opts.size < 4) opts.add(correct + pad++);
-  return shuffle([...opts]);
-}
-
 function showScreen(name) {
   for (const key in screens) {
     screens[key].classList.toggle("is-active", key === name);
@@ -77,6 +57,8 @@ function startRound() {
   state = {
     total: randInt(MIN_SHOT, MAX_SHOT),
     shot: 0,
+    correctAnswer: 0,
+    entry: "",
     correct: 0,
     steps: 0,
     answered: 0,
@@ -103,9 +85,12 @@ function nextTurn() {
 
   state.shot = shot;
   state.correctAnswer = state.total + shot;
+  state.entry = "";
   ui.addValue.textContent = "+" + shot;
-  renderOptions(makeOptions(state.correctAnswer));
+  ui.entryValue.classList.remove("is-correct", "is-wrong");
+  renderEntry();
   setFeedback("");
+  locked = false;
 }
 
 function renderBoard() {
@@ -114,42 +99,48 @@ function renderBoard() {
   ui.progressFill.style.width = Math.min(100, (state.total / FINISH) * 100) + "%";
 }
 
-function renderOptions(values) {
-  ui.options.innerHTML = "";
-  for (const v of values) {
-    const btn = document.createElement("button");
-    btn.className = "opt";
-    btn.type = "button";
-    btn.textContent = v;
-    btn.dataset.value = v;
-    btn.addEventListener("click", () => onAnswer(v, btn));
-    ui.options.appendChild(btn);
-  }
+function renderEntry() {
+  const v = state.entry;
+  ui.entryValue.textContent = v === "" ? "0" : v;
+  ui.entryValue.dataset.empty = v === "" ? "true" : "false";
 }
 
-function onAnswer(value, btn) {
+/* ---------- input ---------- */
+function pressKey(key) {
   if (locked) return;
+
+  if (key === "enter") {
+    submit();
+    return;
+  }
+  if (key === "back") {
+    state.entry = state.entry.slice(0, -1);
+    renderEntry();
+    return;
+  }
+  if (!/^[0-9]$/.test(key)) return;
+  if (state.entry.length >= MAX_DIGITS) return;
+  if (state.entry === "" && key === "0") return; // no leading zero
+  state.entry += key;
+  renderEntry();
+}
+
+function submit() {
+  if (state.entry === "") return; // nothing entered yet
   locked = true;
   state.steps += 1;
   state.answered += 1;
 
+  const value = Number(state.entry);
   const correct = state.correctAnswer;
-  const buttons = [...ui.options.querySelectorAll(".opt")];
-  buttons.forEach((b) => {
-    if (Number(b.dataset.value) !== value && Number(b.dataset.value) !== correct) {
-      b.classList.add("is-dim");
-    }
-  });
 
   if (value === correct) {
     state.correct += 1;
-    btn.classList.add("is-correct");
+    ui.entryValue.classList.add("is-correct");
     setFeedback("Hit", "is-good");
     advance(correct, CORRECT_DELAY);
   } else {
-    btn.classList.add("is-wrong");
-    const right = buttons.find((b) => Number(b.dataset.value) === correct);
-    if (right) right.classList.add("is-correct");
+    ui.entryValue.classList.add("is-wrong");
     setFeedback(`${correct} was the mark`, "is-bad");
     advance(correct, WRONG_DELAY);
   }
@@ -160,13 +151,12 @@ function advance(correctTotal, delay) {
   setTimeout(() => {
     state.total = correctTotal;
     renderBoard();
-    locked = false;
     nextTurn();
   }, delay);
 }
 
 function setFeedback(text, cls) {
-  ui.feedback.textContent = text || " ";
+  ui.feedback.textContent = text || " ";
   ui.feedback.className = "feedback" + (cls ? " " + cls : "");
 }
 
@@ -194,4 +184,17 @@ document.addEventListener("click", (e) => {
   const action = trigger.dataset.action;
   if (action === "start-mode1") startRound();
   else if (action === "home") showScreen("home");
+});
+
+el("keypad").addEventListener("click", (e) => {
+  const key = e.target.closest("[data-key]");
+  if (key) pressKey(key.dataset.key);
+});
+
+// Physical keyboard support (handy on desktop).
+document.addEventListener("keydown", (e) => {
+  if (!screens.game.classList.contains("is-active")) return;
+  if (e.key >= "0" && e.key <= "9") pressKey(e.key);
+  else if (e.key === "Backspace") { e.preventDefault(); pressKey("back"); }
+  else if (e.key === "Enter") pressKey("enter");
 });

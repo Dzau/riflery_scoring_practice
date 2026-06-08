@@ -223,7 +223,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  margin: clamp(20px, 6vh, 44px) 0 clamp(18px, 4vh, 32px);
+  margin: clamp(12px, 3vh, 26px) 0 clamp(10px, 2vh, 18px);
 }
 .board__caption,
 .board__addlabel {
@@ -233,7 +233,7 @@ body {
   color: var(--bone-dim);
 }
 .board__total {
-  font-size: clamp(72px, 26vw, 132px);
+  font-size: clamp(58px, 19vw, 104px);
   font-weight: 700;
   line-height: 0.9;
   color: var(--bone);
@@ -253,43 +253,65 @@ body {
   line-height: 1;
 }
 
-/* ---------- Options ---------- */
-.options {
+/* ---------- Answer entry ---------- */
+.entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.entry__caption {
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--bone-dim);
+}
+.entry__value {
+  min-width: 2.4em;
+  text-align: center;
+  font-size: clamp(40px, 13vw, 64px);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--bone);
+  border-bottom: 3px solid var(--line);
+  padding: 0 18px 8px;
+  transition: color 0.12s, border-color 0.12s;
+}
+.entry__value[data-empty="true"] { color: var(--moss); }
+.entry__value.is-correct { color: var(--green-bright); border-color: var(--green-bright); }
+.entry__value.is-wrong { color: var(--red-bright); border-color: var(--red-bright); }
+
+/* ---------- Number pad ---------- */
+.keypad {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
   margin-top: auto;
 }
-.opt {
+.key {
   appearance: none;
   border: 1px solid var(--line);
   background: linear-gradient(160deg, var(--panel-2), var(--panel));
   color: var(--bone);
   font-family: inherit;
   font-weight: 700;
-  font-size: clamp(30px, 9vw, 40px);
-  padding: clamp(18px, 5vw, 26px) 8px;
-  border-radius: 16px;
+  font-size: clamp(26px, 8vw, 36px);
+  padding: clamp(14px, 3.6vw, 20px) 0;
+  border-radius: 14px;
   cursor: pointer;
   box-shadow: var(--shadow);
-  transition: transform 0.12s var(--ease), border-color 0.12s, background 0.12s;
   -webkit-user-select: none;
   user-select: none;
+  transition: transform 0.1s var(--ease), border-color 0.1s, background 0.1s;
 }
-.opt:active { transform: scale(0.96); }
-.opt.is-correct {
-  border-color: var(--green-bright);
-  background: linear-gradient(160deg, #1f3a1c, #16240f);
-  color: var(--green-bright);
-  box-shadow: 0 0 0 2px var(--green-bright) inset, var(--shadow);
-}
-.opt.is-wrong {
+.key:active { transform: scale(0.95); border-color: var(--red); }
+.key--util { color: var(--bone-dim); font-size: clamp(22px, 6vw, 30px); }
+.key--enter {
+  color: #fff;
+  background: linear-gradient(160deg, var(--red), var(--red-deep));
   border-color: var(--red-bright);
-  background: linear-gradient(160deg, #3a1414, #240d0d);
-  color: var(--red-bright);
-  box-shadow: 0 0 0 2px var(--red-bright) inset, var(--shadow);
 }
-.opt.is-dim { opacity: 0.4; }
+.key--enter:active { border-color: var(--green-bright); }
 
 .feedback {
   text-align: center;
