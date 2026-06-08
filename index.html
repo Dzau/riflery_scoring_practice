@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0d120e" />
+  <title>Riflery Scoring Practice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="ridge" aria-hidden="true"></div>
+
+  <!-- ===================== HOME ===================== -->
+  <section id="home" class="screen is-active">
+    <header class="brand">
+      <div class="brand__mark">
+        <svg viewBox="0 0 64 64" class="target-mark" aria-hidden="true">
+          <circle cx="32" cy="32" r="29" />
+          <circle cx="32" cy="32" r="21" />
+          <circle cx="32" cy="32" r="13" />
+          <circle cx="32" cy="32" r="5" class="target-mark__bull" />
+        </svg>
+      </div>
+      <h1 class="brand__title">Riflery<span>Scoring Practice</span></h1>
+      <p class="brand__tag">Sharpen your tally. Keep your eyes on the bull.</p>
+    </header>
+
+    <nav class="modes">
+      <button class="mode-card" data-action="start-mode1">
+        <span class="mode-card__no">Mode 1</span>
+        <span class="mode-card__name">Tally to 100</span>
+        <span class="mode-card__desc">Add the shots as they come. Race your running total to 100 — never over.</span>
+        <span class="mode-card__go">Start &rarr;</span>
+      </button>
+
+      <button class="mode-card mode-card--soon" disabled>
+        <span class="mode-card__no">Mode 2</span>
+        <span class="mode-card__name">Coming soon</span>
+        <span class="mode-card__desc">A target-reading challenge built around the official 50-ft rifle targets.</span>
+        <span class="mode-card__go">Locked</span>
+      </button>
+    </nav>
+
+    <footer class="home-foot">Red &amp; black · range-ready</footer>
+  </section>
+
+  <!-- ===================== GAME ===================== -->
+  <section id="game" class="screen">
+    <header class="game-top">
+      <button class="iconbtn" data-action="home" aria-label="Back to menu">&larr;</button>
+      <div class="progress">
+        <div class="progress__bar"><span id="progressFill" class="progress__fill"></span></div>
+        <div class="progress__label"><span id="progressNow">0</span> / 100</div>
+      </div>
+    </header>
+
+    <div class="board">
+      <div class="board__running">
+        <span class="board__caption">Running total</span>
+        <span id="runningTotal" class="board__total">0</span>
+      </div>
+
+      <div class="board__add">
+        <span class="board__addlabel">add this shot</span>
+        <span id="addValue" class="board__addvalue">+0</span>
+      </div>
+    </div>
+
+    <div id="options" class="options"></div>
+
+    <p id="feedback" class="feedback">&nbsp;</p>
+  </section>
+
+  <!-- ===================== RESULTS ===================== -->
+  <section id="results" class="screen">
+    <div class="result-card">
+      <h2 id="resultTitle" class="result-card__title">Round complete</h2>
+      <p id="resultSub" class="result-card__sub"></p>
+
+      <div class="stats">
+        <div class="stat">
+          <span id="statTotal" class="stat__num">0</span>
+          <span class="stat__lbl">Final total</span>
+        </div>
+        <div class="stat">
+          <span id="statAcc" class="stat__num">0%</span>
+          <span class="stat__lbl">Accuracy</span>
+        </div>
+        <div class="stat">
+          <span id="statSteps" class="stat__num">0</span>
+          <span class="stat__lbl">Additions</span>
+        </div>
+        <div class="stat">
+          <span id="statTime" class="stat__num">0s</span>
+          <span class="stat__lbl">Time</span>
+        </div>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn btn--primary" data-action="start-mode1">Play again</button>
+        <button class="btn btn--ghost" data-action="home">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
