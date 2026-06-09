@@ -26,6 +26,7 @@ const screens = {
   choose: el("choose"),
   score: el("score"),
   scoreResult: el("scoreResult"),
+  camera: el("camera"),
 };
 
 const ui = {
@@ -200,6 +201,11 @@ document.addEventListener("click", (e) => {
   else if (action === "score-five") startScoring("five");
   else if (action === "score-done") scoreDone();
   else if (action === "score-again") scoreAgain();
+  else if (action === "camera-start") camStart();
+  else if (action === "cam-pick-single") camPick("single");
+  else if (action === "cam-pick-five") camPick("five");
+  else if (action === "cam-capture") camCapture();
+  else if (action === "cam-retake") camRetake();
 });
 
 el("keypad").addEventListener("click", (e) => {
@@ -236,6 +242,8 @@ const COORD = 100; // SVG overlay coordinate space (0-100, square)
 // Geometry is calibrated to the cropped target photos in /assets.
 // `bulls` are bull centres; `rings` list each ring's outer radius
 // (innermost first). All values are percentages of the square image.
+// `holeR` is the bullet-hole radius used for "touching a ring scores the
+//  higher value" — kept generous so calls favour the shooter.
 const TARGETS = {
   single: {
     name: "One-bull target",
@@ -246,7 +254,7 @@ const TARGETS = {
       { v: 6, r: 9.75 }, { v: 5, r: 11.7 }, { v: 4, r: 14.4 }, { v: 3, r: 27.8 },
       { v: 2, r: 45.2 },
     ],
-    holeR: 0.6,
+    holeR: 1.2,
   },
   five: {
     name: "Five-bull target",
@@ -260,7 +268,8 @@ const TARGETS = {
       { v: 10, r: 2.04 }, { v: 9, r: 4.08 }, { v: 8, r: 6.11 },
       { v: 7, r: 8.15 }, { v: 6, r: 10.19 }, { v: 5, r: 12.23 },
     ],
-    holeR: 0.5,
+    holeR: 1.0,
+    shotsPerBull: 2,
   },
 };
 
@@ -326,14 +335,19 @@ function buildTarget() {
 }
 
 /* ---------- scoring ---------- */
-function scoreAt(x, y) {
-  let nearest = null;
-  for (const b of target.bulls) {
+function nearestBullIndex(x, y) {
+  let bi = 0, bd = Infinity;
+  target.bulls.forEach((b, i) => {
     const d = Math.hypot(x - b.cx, y - b.cy);
-    if (!nearest || d < nearest) nearest = d;
-  }
+    if (d < bd) { bd = d; bi = i; }
+  });
+  return bi;
+}
+
+function scoreAt(x, y) {
+  const b = target.bulls[nearestBullIndex(x, y)];
   // A shot touching a ring takes the higher value, so test the hole's inner edge.
-  const edge = nearest - target.holeR;
+  const edge = Math.hypot(x - b.cx, y - b.cy) - target.holeR;
   for (const ring of target.rings) {
     if (edge <= ring.r) return ring.v;
   }
@@ -352,12 +366,21 @@ function onTargetClick(e) {
   const idx = shots.findIndex((s) => Math.hypot(s.x - x, s.y - y) <= hitR);
   if (idx !== -1) {
     shots.splice(idx, 1);
-  } else if (shots.length < MAX_SHOTS) {
-    shots.push({ x, y, value: scoreAt(x, y) });
-  } else {
+    renderShots();
+    return;
+  }
+  if (shots.length >= MAX_SHOTS) {
     setHint("That's all 10 shots — add up your score");
     return;
   }
+  // The five-bull target allows only 2 shots per bull.
+  const bull = nearestBullIndex(x, y);
+  if (target.shotsPerBull &&
+      shots.filter((s) => s.bull === bull).length >= target.shotsPerBull) {
+    setHint(`That bull already has ${target.shotsPerBull} shots`);
+    return;
+  }
+  shots.push({ x, y, value: scoreAt(x, y), bull });
   renderShots();
 }
 

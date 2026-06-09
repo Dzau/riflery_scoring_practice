@@ -1,0 +1,16 @@
+{
+  "name": "Riflery Scoring Practice",
+  "short_name": "Riflery",
+  "description": "Practice the mental math behind scoring rifle targets.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0f0b",
+  "theme_color": "#0d120e",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "assets/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
