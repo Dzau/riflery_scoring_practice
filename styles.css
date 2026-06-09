@@ -402,47 +402,45 @@ body {
 }
 .choose-list { margin-top: clamp(20px, 5vh, 36px); }
 
-.score-hint {
-  text-align: center;
-  color: var(--bone-dim);
-  font-size: 12px;
+.shot-count {
+  margin-left: auto;
+  font-weight: 700;
+  font-size: 16px;
   letter-spacing: 1px;
-  text-transform: uppercase;
-  margin: 12px 0 8px;
+  color: var(--red-bright);
 }
 
 .target-wrap {
+  position: relative;
   width: 100%;
-  max-width: 380px;
-  margin: 0 auto;
+  max-width: min(380px, 64vh);
+  margin: 8px auto 0;
   aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--line);
 }
-.target-svg {
+.target-img,
+.target-overlay {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   display: block;
-  border-radius: 12px;
-  border: 1px solid var(--line);
-  touch-action: manipulation;
-  cursor: crosshair;
 }
-.tg-paper { fill: #d8d3c4; }
-.tg-ring { fill: none; stroke: #2b2b28; stroke-width: 0.3; }
-.tg-bull { fill: #1a1a18; }
-.tg-ring-in { fill: none; stroke: #d8d3c4; stroke-width: 0.3; opacity: 0.85; }
-.tg-num {
-  font-family: "Oswald", sans-serif;
-  font-size: 2.4px;
-  font-weight: 600;
-  fill: #2b2b28;
+.target-img { object-fit: cover; -webkit-user-select: none; user-select: none; pointer-events: none; }
+.target-overlay { touch-action: manipulation; cursor: crosshair; }
+
+/* Shot markers — a high-contrast ring so the hole reads on the photo.
+   The scored value is intentionally never drawn here. */
+.tg-shot {
+  fill: rgba(0, 0, 0, 0.25);
+  stroke: #ff2e2e;
+  stroke-width: 0.5;
 }
-.tg-num--bull { fill: #d8d3c4; }
-.tg-hole {
-  fill: var(--red);
-  stroke: #2a0708;
-  stroke-width: 0.25;
-}
-.tg-hole--miss { fill: #5a5a52; stroke: #2a2a26; }
+.tg-shot__dot { fill: #ffd23f; }
+
+.sr-breakdown { margin-bottom: 22px; text-align: left; }
 
 .adder {
   margin-top: auto;

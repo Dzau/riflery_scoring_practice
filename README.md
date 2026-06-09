@@ -22,19 +22,25 @@ A running-addition drill:
   for that round only — nothing is saved between rounds.
 
 ### Mode 2 — Score a Target
-A scoring aid for the official NRA 50-ft rifle targets. You pick the target, tap
-your shots, and add up the score yourself.
+Score a real NRA 50-ft target yourself, then check your work. Uses photos of the
+actual targets we shoot.
 
 - Choose a target type:
   - **One-bull (TQ-1/1)** — a single bull with scoring rings **2–10**.
-  - **Five-bull (TQ-1/5)** — five bulls, each scored **5–10**, two shots apiece.
-- **Tap the target** to drop a shot; the app reads which ring it landed in. A shot
-  **touching a ring scores the higher (inner) value**, and anything outside every
-  ring is a **miss**. Tap a shot again to remove it.
-- Each shot's value appears as a chip below the target.
-- The **adder** helps you total them: tap **Add next** to fold one shot at a time
-  into the running total, so you can add in your head and check each step. The
-  scoring math stays yours — the adder just keeps the tally.
+  - **Five-bull (TQ-1/5)** — five bulls, each scored **5–10**.
+- **Tap up to 10 shots** onto the target photo. A marker drops where you tap, but
+  **the app never shows you what each shot scored** — you read the ring yourself.
+  Tap a shot again to remove it.
+- **Add up your score** and type it into the score box at the bottom (same number
+  pad as Mode 1). The app scores the round in the background as you place shots —
+  a shot **touching a ring takes the higher (inner) value**, and anything outside
+  every ring is a **miss**.
+- Press **✓** to submit your total. The app reveals the **actual score**, tells you
+  how far off you were, and shows the **shot-by-shot** breakdown so you can see
+  where your reads differed.
+
+Target geometry is calibrated to the cropped photos in `assets/`, so taps are
+scored against the real ring positions.
 
 ## Run it
 
@@ -53,3 +59,4 @@ python3 -m http.server 8000
 | `index.html` | Markup for the home, game, results, and Mode 2 scoring screens |
 | `styles.css` | Red/black/nature theme and layout |
 | `app.js` | Mode 1 tally game + Mode 2 target scoring logic |
+| `assets/` | Cropped photos of the real one-bull and five-bull targets |

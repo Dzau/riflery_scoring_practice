@@ -155,29 +155,59 @@
     <header class="game-top">
       <button class="iconbtn" data-action="choose-target" aria-label="Back to target choice">&larr;</button>
       <h2 id="scoreTitle" class="screen-title">Score a target</h2>
-      <button class="iconbtn" data-action="clear-shots" aria-label="Clear all shots">&#9003;</button>
+      <span id="shotCount" class="shot-count">0 / 10</span>
     </header>
-
-    <p class="score-hint">Tap to drop a shot &middot; tap a shot to remove it</p>
 
     <div id="targetWrap" class="target-wrap"></div>
 
-    <div class="adder">
-      <div class="adder__shots">
-        <span class="adder__label">Shots</span>
-        <div id="shotList" class="shot-list"><span class="shot-list__empty">No shots yet</span></div>
+    <div class="entry">
+      <span class="entry__caption">your score</span>
+      <span id="scoreEntry" class="entry__value" data-empty="true">0</span>
+    </div>
+
+    <p id="scoreHint" class="feedback">Tap your 10 shots, read each ring, then add up your score</p>
+
+    <div id="scorePad" class="keypad">
+      <button class="key" type="button" data-key="1">1</button>
+      <button class="key" type="button" data-key="2">2</button>
+      <button class="key" type="button" data-key="3">3</button>
+      <button class="key" type="button" data-key="4">4</button>
+      <button class="key" type="button" data-key="5">5</button>
+      <button class="key" type="button" data-key="6">6</button>
+      <button class="key" type="button" data-key="7">7</button>
+      <button class="key" type="button" data-key="8">8</button>
+      <button class="key" type="button" data-key="9">9</button>
+      <button class="key key--util" type="button" data-key="back" aria-label="Delete">&#9003;</button>
+      <button class="key" type="button" data-key="0">0</button>
+      <button class="key key--enter" type="button" data-key="enter" aria-label="Submit score">&#10003;</button>
+    </div>
+  </section>
+
+  <!-- ===================== SCORE RESULT ===================== -->
+  <section id="scoreResult" class="screen">
+    <div class="result-card">
+      <h2 id="srTitle" class="result-card__title">Round scored</h2>
+      <p id="srSub" class="result-card__sub"></p>
+
+      <div class="stats">
+        <div class="stat">
+          <span id="srYours" class="stat__num">0</span>
+          <span class="stat__lbl">Your score</span>
+        </div>
+        <div class="stat">
+          <span id="srActual" class="stat__num">0</span>
+          <span class="stat__lbl">Actual score</span>
+        </div>
       </div>
 
-      <div class="adder__tally">
-        <div class="tally__line">
-          <span class="tally__caption">Running total</span>
-          <span id="tallySub" class="tally__sub">+0</span>
-        </div>
-        <span id="tallyTotal" class="tally__total">0</span>
-        <div class="tally__actions">
-          <button class="btn btn--ghost" type="button" data-action="add-next">Add next &rarr;</button>
-          <button class="btn btn--ghost" type="button" data-action="add-reset">Reset adder</button>
-        </div>
+      <div class="sr-breakdown">
+        <span class="adder__label">Shot by shot</span>
+        <div id="srBreakdown" class="shot-list"></div>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn btn--primary" data-action="score-again">Score again</button>
+        <button class="btn btn--ghost" data-action="home">Menu</button>
       </div>
     </div>
   </section>
