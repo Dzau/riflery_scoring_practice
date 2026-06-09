@@ -85,6 +85,22 @@ the app will be rejected / crash when opening the camera.
 <uses-permission android:name="android.permission.CAMERA" />
 ```
 
+## Troubleshooting
+
+**`xcrun: error: unable to find utility "simctl"`** (from `npx cap run ios`).
+`simctl` ships only with full Xcode, not the Command Line Tools. Either just use
+`npm run open:ios` and Run from Xcode (recommended), or point the toolchain at
+Xcode:
+
+```sh
+sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+sudo xcodebuild -license accept
+xcrun simctl list devices   # should now list simulators
+```
+
+If no simulators are listed, install an iOS Simulator runtime in
+**Xcode → Settings → Components**.
+
 ## Notes
 
 - All scoring/detection runs **on-device** — no photos are uploaded.
