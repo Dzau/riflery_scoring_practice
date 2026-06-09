@@ -48,8 +48,20 @@ In Android Studio: Run on a device/emulator. Build → Generate Signed Bundle
   Change it to your own reverse-DNS id before first submit if you like — it must
   be unique and is permanent once published.
 - App name: **Riflery Scoring Practice**.
-- Icons: the PWA icons live in `assets/`. To generate full native icon/splash
-  sets, run `npx @capacitor/assets generate` (point it at a 1024×1024 icon).
+
+## App icon & splash screen
+
+The source art lives in `resources/` (1024×1024 icon, 2732×2732 splashes, plus
+adaptive-icon foreground/background). After adding the platforms, generate the
+full native icon/splash sets with:
+
+```sh
+npm run assets        # writes icons/splashes into ios/ and android/
+```
+
+Re-run it whenever you change the art in `resources/`. To redesign, replace
+`resources/icon-only.png` (and `icon-foreground.png` / `splash.png`) and run it
+again.
 
 ## Camera permissions (Mode 3)
 

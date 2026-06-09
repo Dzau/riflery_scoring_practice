@@ -5,6 +5,7 @@
   "description": "Practice the mental math behind scoring rifle targets.",
   "scripts": {
     "build": "node scripts/build-web.mjs",
+    "assets": "capacitor-assets generate --assetPath resources",
     "sync": "npm run build && cap sync",
     "copy": "npm run build && cap copy",
     "add:ios": "npm run build && cap add ios",
@@ -13,6 +14,7 @@
     "open:android": "cap open android"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^8.0.0"
   },
   "dependencies": {
