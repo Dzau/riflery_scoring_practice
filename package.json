@@ -1,0 +1,24 @@
+{
+  "name": "riflery-scoring-practice",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Practice the mental math behind scoring rifle targets.",
+  "scripts": {
+    "build": "node scripts/build-web.mjs",
+    "sync": "npm run build && cap sync",
+    "copy": "npm run build && cap copy",
+    "add:ios": "npm run build && cap add ios",
+    "add:android": "npm run build && cap add android",
+    "open:ios": "cap open ios",
+    "open:android": "cap open android"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/camera": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/ios": "^8.0.0"
+  }
+}

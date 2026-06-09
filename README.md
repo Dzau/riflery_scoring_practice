@@ -57,9 +57,19 @@ All detection runs on-device in plain JavaScript (no server, no upload).
 
 ## Installable (PWA)
 The app ships with a web manifest, icons, and an offline service worker, so it
-can be **installed to a phone home screen** and run full-screen offline. This is
-also the foundation for packaging it for the App Store / Google Play (e.g. via
-Capacitor).
+can be **installed to a phone home screen** and run full-screen offline.
+
+## Native apps (App Store / Google Play)
+The app is wrapped with [Capacitor](https://capacitorjs.com/) for the iOS and
+Android stores. The native projects are generated on demand — see
+**[MOBILE.md](MOBILE.md)** for the full build-and-submit guide. Quick version:
+
+```sh
+npm install
+npm run add:ios      # creates the Xcode project
+npm run add:android  # creates the Android Studio project
+npm run sync         # push web changes into both after edits
+```
 
 ## Run it
 
@@ -81,3 +91,6 @@ python3 -m http.server 8000
 | `camera.js` | Mode 3 camera capture, target/hole detection, and scoring |
 | `manifest.webmanifest`, `sw.js` | PWA manifest and offline service worker |
 | `assets/` | Cropped target photos and app icons |
+| `package.json`, `capacitor.config.json` | Capacitor (native app) config |
+| `scripts/build-web.mjs` | Copies the static site into `www/` for Capacitor |
+| `MOBILE.md` | App Store / Google Play build guide |

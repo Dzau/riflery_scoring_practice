@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+
+# Generated web bundle for Capacitor
+www/
+
+# Generated native projects (run `npm run add:ios` / `add:android` to create)
+ios/
+android/
+
+# OS / editor cruft
+.DS_Store

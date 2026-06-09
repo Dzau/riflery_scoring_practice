@@ -1,0 +1,14 @@
+{
+  "appId": "com.riflery.scoringpractice",
+  "appName": "Riflery Scoring Practice",
+  "webDir": "www",
+  "backgroundColor": "#0b0f0b",
+  "ios": {
+    "contentInset": "always"
+  },
+  "plugins": {
+    "Camera": {
+      "permissions": ["camera", "photos"]
+    }
+  }
+}

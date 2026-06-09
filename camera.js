@@ -48,7 +48,28 @@ function camPick(key) {
   document.querySelector('[data-action="cam-pick-five"]').classList.toggle("seg--on", key === "five");
 }
 
-function camCapture() {
+async function camCapture() {
+  // In the native (Capacitor) app, use the Camera plugin for proper
+  // camera/library access. On the web, fall back to the file input.
+  const Cap = window.Capacitor;
+  if (Cap && Cap.isNativePlatform && Cap.isNativePlatform() && Cap.Plugins && Cap.Plugins.Camera) {
+    try {
+      const photo = await Cap.Plugins.Camera.getPhoto({
+        quality: 90,
+        resultType: "dataUrl",
+        source: "PROMPT",
+      });
+      if (photo && photo.dataUrl) {
+        const img = new Image();
+        img.onload = () => analyzePhoto(img);
+        img.onerror = () => setCamStatus("Couldn't read that image — try another.");
+        img.src = photo.dataUrl;
+      }
+    } catch (_) {
+      /* user cancelled */
+    }
+    return;
+  }
   cui.file().value = "";
   cui.file().click();
 }
