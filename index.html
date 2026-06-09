@@ -262,9 +262,22 @@
   <script src="app.js"></script>
   <script src="camera.js"></script>
   <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
-    }
+    // The service worker is for the web PWA only. Inside the native
+    // (Capacitor) app it would intercept the capacitor:// scheme and break
+    // the native bridge, so we keep it web-only and clean up any stale one.
+    (function () {
+      if (!("serviceWorker" in navigator)) return;
+      var native = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+      if (native) {
+        navigator.serviceWorker.getRegistrations()
+          .then(function (rs) { rs.forEach(function (r) { r.unregister(); }); })
+          .catch(function () {});
+      } else {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker.register("sw.js").catch(function () {});
+        });
+      }
+    })();
   </script>
 </body>
 </html>

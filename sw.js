@@ -31,6 +31,7 @@ self.addEventListener("activate", (e) => {
 // Cache-first for our own GET requests; fall back to network.
 self.addEventListener("fetch", (e) => {
   if (e.request.method !== "GET") return;
+  if (!e.request.url.startsWith("http")) return; // never touch capacitor:// etc.
   e.respondWith(
     caches.match(e.request).then((hit) => hit || fetch(e.request).then((res) => {
       const copy = res.clone();
