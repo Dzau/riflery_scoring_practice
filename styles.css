@@ -413,8 +413,8 @@ body {
 .target-wrap {
   position: relative;
   width: 100%;
-  max-width: min(380px, 64vh);
-  margin: 8px auto 0;
+  max-width: min(340px, 44vh);
+  margin: 6px auto 0;
   aspect-ratio: 1 / 1;
   border-radius: 12px;
   overflow: hidden;
@@ -441,6 +441,41 @@ body {
 .tg-shot__dot { fill: #ffd23f; }
 
 .sr-breakdown { margin-bottom: 22px; text-align: left; }
+
+/* Mode 2 running tally */
+#score .entry { gap: 2px; margin-top: 6px; }
+.entry__value--score { font-size: clamp(32px, 10vw, 50px); padding-bottom: 4px; }
+.entry__value.bump { animation: tally-bump 0.3s var(--ease); }
+@keyframes tally-bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.16); color: var(--green-bright); }
+  100% { transform: scale(1); }
+}
+
+.addrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 6px 2px 10px;
+}
+.addrow__entry { display: flex; align-items: baseline; gap: 8px; }
+.addrow__label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--bone-dim);
+}
+.addrow__val { font-size: 26px; font-weight: 700; color: var(--red-bright); line-height: 1; }
+.addrow__val[data-empty="true"] { color: var(--moss); }
+.addrow__hint { flex: 1; text-align: right; font-size: 12px; color: var(--bone-dim); }
+
+.score-done { margin-top: 10px; padding: 13px; }
+#scorePad { margin-top: 0; gap: 8px; }
+#scorePad .key { padding: clamp(9px, 2.4vw, 15px) 0; box-shadow: none; }
+#score .target-wrap { max-width: min(300px, 34vh); }
+#score .entry__value--score { font-size: clamp(30px, 9vw, 44px); }
+#score .addrow { margin: 4px 2px 8px; }
 
 .adder {
   margin-top: auto;

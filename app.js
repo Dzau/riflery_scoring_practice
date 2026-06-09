@@ -198,6 +198,7 @@ document.addEventListener("click", (e) => {
   else if (action === "choose-target") showScreen("choose");
   else if (action === "score-single") startScoring("single");
   else if (action === "score-five") startScoring("five");
+  else if (action === "score-done") scoreDone();
   else if (action === "score-again") scoreAgain();
 });
 
@@ -265,15 +266,18 @@ const TARGETS = {
 
 const SVGNS = "http://www.w3.org/2000/svg";
 
-let target = null;     // active target definition
-let shots = [];        // [{ x, y, value }] — value kept hidden until scored
-let scoreEntry = "";   // what the user has typed for their total
+let target = null;       // active target definition
+let shots = [];          // [{ x, y, value }] — value kept hidden until scored
+let scoreEntry = "";     // the value currently being typed for one shot
+let scoreTotal = 0;      // the user's running tally
+let reads = 0;           // how many shot values they've added
 
 const ui2 = {
   wrap: el("targetWrap"),
   title: el("scoreTitle"),
   count: el("shotCount"),
   entry: el("scoreEntry"),
+  total: el("scoreTotal"),
   hint: el("scoreHint"),
   srTitle: el("srTitle"),
   srSub: el("srSub"),
@@ -286,11 +290,13 @@ function startScoring(kind) {
   target = TARGETS[kind];
   shots = [];
   scoreEntry = "";
+  scoreTotal = 0;
+  reads = 0;
   ui2.title.textContent = target.name;
   buildTarget();
   renderShots();
-  renderScoreEntry();
-  setHint("Tap your 10 shots, read each ring, then add up your score");
+  renderTally();
+  setHint("Tap your shots, read each ring, add it");
   showScreen("score");
 }
 
@@ -372,37 +378,50 @@ function setHint(text) {
   ui2.hint.textContent = text;
 }
 
-/* ---------- the score entry (Mode 1-style pad) ---------- */
-function renderScoreEntry() {
-  ui2.entry.textContent = scoreEntry === "" ? "0" : scoreEntry;
+/* ---------- the running-tally pad (Mode 1-style) ----------
+   Type one shot's value, press + to add it to the running total
+   shown above, repeat for each shot, then press Done to check. */
+function renderTally() {
+  ui2.total.textContent = scoreTotal;
+  ui2.entry.textContent = scoreEntry === "" ? "+0" : "+" + scoreEntry;
   ui2.entry.dataset.empty = scoreEntry === "" ? "true" : "false";
 }
 
 function scorePressKey(key) {
-  if (key === "enter") { submitScore(); return; }
+  if (key === "enter") { addRead(); return; }
   if (key === "back") {
     scoreEntry = scoreEntry.slice(0, -1);
-    renderScoreEntry();
+    renderTally();
     return;
   }
   if (!/^[0-9]$/.test(key)) return;
-  if (scoreEntry.length >= 3) return;            // 100 max
-  if (scoreEntry === "" && key === "0") return;  // no leading zero
+  if (scoreEntry.length >= 2) return;            // single shot tops out at 10
+  if (scoreEntry === "0") return;                // 0 is a complete entry already
   scoreEntry += key;
-  renderScoreEntry();
+  renderTally();
 }
 
-function submitScore() {
+// Fold the typed value into the running total (the tally that keeps rising).
+function addRead() {
+  if (scoreEntry === "") return;
+  scoreTotal += Number(scoreEntry);
+  reads += 1;
+  scoreEntry = "";
+  renderTally();
+  ui2.total.classList.remove("bump");
+  void ui2.total.offsetWidth; // restart the bump animation
+  ui2.total.classList.add("bump");
+  setHint(`${reads} shot${reads === 1 ? "" : "s"} added · press Done when finished`);
+}
+
+function scoreDone() {
   if (shots.length === 0) {
     setHint("Tap your shots onto the target first");
     return;
   }
-  if (scoreEntry === "") {
-    setHint("Type your total score, then press ✓");
-    return;
-  }
+  if (scoreEntry !== "") addRead(); // fold in anything still typed
 
-  const yours = Number(scoreEntry);
+  const yours = scoreTotal;
   const actual = shots.reduce((sum, s) => sum + s.value, 0);
   const diff = yours - actual;
 

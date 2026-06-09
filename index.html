@@ -162,10 +162,16 @@
 
     <div class="entry">
       <span class="entry__caption">your score</span>
-      <span id="scoreEntry" class="entry__value" data-empty="true">0</span>
+      <span id="scoreTotal" class="entry__value entry__value--score">0</span>
     </div>
 
-    <p id="scoreHint" class="feedback">Tap your 10 shots, read each ring, then add up your score</p>
+    <div class="addrow">
+      <div class="addrow__entry">
+        <span class="addrow__label">this shot</span>
+        <span id="scoreEntry" class="addrow__val" data-empty="true">+0</span>
+      </div>
+      <span id="scoreHint" class="addrow__hint">Read each ring, add it to your tally</span>
+    </div>
 
     <div id="scorePad" class="keypad">
       <button class="key" type="button" data-key="1">1</button>
@@ -179,8 +185,10 @@
       <button class="key" type="button" data-key="9">9</button>
       <button class="key key--util" type="button" data-key="back" aria-label="Delete">&#9003;</button>
       <button class="key" type="button" data-key="0">0</button>
-      <button class="key key--enter" type="button" data-key="enter" aria-label="Submit score">&#10003;</button>
+      <button class="key key--enter" type="button" data-key="enter" aria-label="Add this shot">&plus;</button>
     </div>
+
+    <button class="btn btn--primary score-done" type="button" data-action="score-done">Done &mdash; check my score</button>
   </section>
 
   <!-- ===================== SCORE RESULT ===================== -->
