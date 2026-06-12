@@ -1,6 +1,6 @@
 /* Service worker — offline app shell for Riflery Scoring Practice.
    Bump CACHE when any cached file changes so clients pick up the update. */
-const CACHE = "riflery-v3";
+const CACHE = "riflery-v4";
 const ASSETS = [
   ".",
   "index.html",

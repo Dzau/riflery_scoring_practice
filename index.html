@@ -54,6 +54,13 @@
         <span class="mode-card__desc">Snap a photo of a real target and let the app find the shots and score it for you.</span>
         <span class="mode-card__go">Open camera &rarr;</span>
       </button>
+
+      <button class="mode-card" data-action="race-start">
+        <span class="mode-card__no">Mode 1 · party</span>
+        <span class="mode-card__name">Party Race</span>
+        <span class="mode-card__desc">Everyone races the same shots. Share a code, then compare your time and accuracy.</span>
+        <span class="mode-card__go">Race &rarr;</span>
+      </button>
     </nav>
 
     <footer class="home-foot">Red &amp; black · range-ready</footer>
@@ -104,11 +111,43 @@
     </div>
   </section>
 
+  <!-- ===================== PARTY RACE SETUP ===================== -->
+  <section id="race" class="screen">
+    <header class="game-top">
+      <button class="iconbtn" data-action="home" aria-label="Back to menu">&larr;</button>
+      <h2 class="screen-title">Party Race</h2>
+    </header>
+
+    <p class="race-intro">Everyone who enters the same code races the <strong>exact same shots</strong> — Tally to 100, head to head. Fastest with the best accuracy wins.</p>
+
+    <div id="raceSetup" class="race-setup">
+      <button class="btn btn--primary" type="button" data-action="race-create">Create a race</button>
+      <div class="race-or"><span>or join one</span></div>
+      <div class="race-join">
+        <input id="raceInput" class="race-input" inputmode="numeric" maxlength="4" placeholder="0000" aria-label="Race code" />
+        <button class="btn btn--ghost" type="button" data-action="race-join">Join</button>
+      </div>
+      <p id="raceMsg" class="feedback">&nbsp;</p>
+    </div>
+
+    <div id="raceReady" class="race-ready" hidden>
+      <span class="entry__caption">your race code</span>
+      <span id="raceCodeShow" class="board__total">0000</span>
+      <p class="race-share-hint">Share this code with your party. Everyone enters it and races the same shots.</p>
+      <div class="result-actions">
+        <button class="btn btn--primary" type="button" data-action="race-go">Start race</button>
+        <button class="btn btn--ghost" type="button" data-action="race-share">Share code</button>
+        <button class="btn btn--ghost" type="button" data-action="race-start">Change code</button>
+      </div>
+    </div>
+  </section>
+
   <!-- ===================== RESULTS ===================== -->
   <section id="results" class="screen">
     <div class="result-card">
       <h2 id="resultTitle" class="result-card__title">Round complete</h2>
       <p id="resultSub" class="result-card__sub"></p>
+      <p id="resultRace" class="result-race" hidden></p>
 
       <div class="stats">
         <div class="stat">
@@ -130,7 +169,8 @@
       </div>
 
       <div class="result-actions">
-        <button class="btn btn--primary" data-action="start-mode1">Play again</button>
+        <button id="btnPlayAgain" class="btn btn--primary" data-action="play-again">Play again</button>
+        <button id="btnShareResult" class="btn btn--ghost" data-action="race-share-result" hidden>Share my result</button>
         <button class="btn btn--ghost" data-action="home">Menu</button>
       </div>
     </div>

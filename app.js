@@ -22,6 +22,7 @@ const el = (id) => document.getElementById(id);
 const screens = {
   home: el("home"),
   game: el("game"),
+  race: el("race"),
   results: el("results"),
   choose: el("choose"),
   score: el("score"),
@@ -47,8 +48,26 @@ const ui = {
 let state = null;
 let locked = false;
 
+// Party Race: when set, the shot sequence is drawn from a seeded RNG so
+// every player who enters the same code faces the identical sequence.
+let inRace = false;
+let raceSeed = null;
+let rng = Math.random;
+let pendingRaceCode = null; // chosen on the setup screen, used when the race starts
+let lastResult = null;
+
+// Deterministic PRNG (mulberry32) — same seed yields the same sequence.
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 /* ---------- helpers ---------- */
-const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+const randInt = (min, max) => Math.floor(rng() * (max - min + 1)) + min;
 
 function showScreen(name) {
   for (const key in screens) {
@@ -57,7 +76,11 @@ function showScreen(name) {
 }
 
 /* ---------- game flow ---------- */
-function startRound() {
+function startRound(seed) {
+  // A seed (the race code) makes the whole sequence deterministic.
+  inRace = seed != null;
+  raceSeed = inRace ? seed : null;
+  rng = inRace ? mulberry32(seed >>> 0) : Math.random;
   state = {
     total: randInt(MIN_SHOT, MAX_SHOT),
     shot: 0,
@@ -175,16 +198,33 @@ function setFeedback(text, cls) {
 function endRound(win) {
   const elapsed = Math.round((Date.now() - state.startedAt) / 1000);
   const acc = state.answered ? Math.round((state.correct / state.answered) * 100) : 100;
-
-  ui.resultTitle.textContent = win ? "Bullseye — 100!" : "Topped out";
-  ui.resultSub.textContent = win
-    ? "You landed dead on the line."
-    : `The next shot would have gone over. You finished at ${state.total}.`;
+  lastResult = { win, total: state.total, acc, steps: state.steps, elapsed, code: raceSeed };
 
   ui.statTotal.textContent = state.total;
   ui.statAcc.textContent = acc + "%";
   ui.statSteps.textContent = state.steps;
   ui.statTime.textContent = elapsed + "s";
+
+  const raceLine = el("resultRace");
+  const shareBtn = el("btnShareResult");
+  if (inRace) {
+    ui.resultTitle.textContent = "Race complete";
+    ui.resultSub.textContent = win
+      ? "You hit 100 dead on."
+      : `You topped out at ${state.total}.`;
+    raceLine.hidden = false;
+    raceLine.textContent = `Race ${raceSeed} · ${elapsed}s · ${acc}% accuracy. Compare with your party!`;
+    shareBtn.hidden = false;
+    el("btnPlayAgain").textContent = "Race again";
+  } else {
+    ui.resultTitle.textContent = win ? "Bullseye — 100!" : "Topped out";
+    ui.resultSub.textContent = win
+      ? "You landed dead on the line."
+      : `The next shot would have gone over. You finished at ${state.total}.`;
+    raceLine.hidden = true;
+    shareBtn.hidden = true;
+    el("btnPlayAgain").textContent = "Play again";
+  }
 
   showScreen("results");
 }
@@ -195,6 +235,7 @@ document.addEventListener("click", (e) => {
   if (!trigger) return;
   const action = trigger.dataset.action;
   if (action === "start-mode1") startRound();
+  else if (action === "play-again") startRound(inRace ? raceSeed : undefined);
   else if (action === "home") showScreen("home");
   else if (action === "choose-target") showScreen("choose");
   else if (action === "score-single") startScoring("single");
@@ -206,7 +247,68 @@ document.addEventListener("click", (e) => {
   else if (action === "cam-pick-five") camPick("five");
   else if (action === "cam-capture") camCapture();
   else if (action === "cam-retake") camRetake();
+  else if (action === "race-start") showRaceSetup();
+  else if (action === "race-create") raceCreate();
+  else if (action === "race-join") raceJoin();
+  else if (action === "race-go") startRound(pendingRaceCode);
+  else if (action === "race-share") raceShareCode();
+  else if (action === "race-share-result") raceShareResult();
 });
+
+/* ---------- Party Race setup ---------- */
+function showRaceSetup() {
+  pendingRaceCode = null;
+  el("raceSetup").hidden = false;
+  el("raceReady").hidden = true;
+  el("raceInput").value = "";
+  setRaceMsg("");
+  showScreen("race");
+}
+
+function raceCreate() {
+  pendingRaceCode = Math.floor(1000 + Math.random() * 9000); // 4-digit code
+  showRaceReady();
+}
+
+function raceJoin() {
+  const v = (el("raceInput").value || "").replace(/\D/g, "");
+  if (v.length !== 4) {
+    setRaceMsg("Enter the 4-digit code your party shared.");
+    return;
+  }
+  pendingRaceCode = Number(v);
+  showRaceReady();
+}
+
+function showRaceReady() {
+  el("raceCodeShow").textContent = String(pendingRaceCode);
+  el("raceSetup").hidden = true;
+  el("raceReady").hidden = false;
+}
+
+function setRaceMsg(text) {
+  el("raceMsg").textContent = text || " ";
+}
+
+function raceShareCode() {
+  const text = `Race me in Riflery Scoring Practice! Enter race code ${pendingRaceCode} for the same shots.`;
+  shareOrCopy(text, "Race code copied — send it to your party.");
+}
+
+function raceShareResult() {
+  if (!lastResult) return;
+  const r = lastResult;
+  const text = `Riflery race ${r.code}: I finished at ${r.total} in ${r.elapsed}s with ${r.acc}% accuracy. Beat that!`;
+  shareOrCopy(text, "Result copied — paste it to your party.");
+}
+
+function shareOrCopy(text, copiedMsg) {
+  if (navigator.share) {
+    navigator.share({ text }).catch(() => {});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => setRaceMsg(copiedMsg)).catch(() => {});
+  }
+}
 
 el("keypad").addEventListener("click", (e) => {
   const key = e.target.closest("[data-key]");

@@ -21,6 +21,13 @@ A running-addition drill:
 - The results screen shows final total, accuracy, number of additions, and time
   for that round only — nothing is saved between rounds.
 
+#### Party Race
+A head-to-head version of Mode 1. **Create a race** to get a 4-digit code (or
+**Join** with a friend's code). The code seeds the shot sequence, so everyone who
+enters it races the **exact same shots** — no server needed. Each player races on
+their own phone; the result screen shows your time and accuracy with a **Share**
+button so you can compare across the party.
+
 ### Mode 2 — Score a Target
 Score a real NRA 50-ft target yourself, then check your work. Uses photos of the
 actual targets we shoot.
